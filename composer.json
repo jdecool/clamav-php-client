@@ -1,0 +1,31 @@
+{
+    "name": "jdecool/clamav-client",
+    "description": "ClamAV PHP deamon client",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jérémy DECOOL",
+            "email": "contact@jdecool.fr"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "clue/socket-raw": "^1.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.3",
+        "phpstan/phpstan": "^0.10.2",
+        "friendsofphp/php-cs-fixer": "^2.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "JDecool\\ClamAV\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JDecool\\ClamAV\\Tests\\": "tests/phpunit"
+        }
+    }
+}

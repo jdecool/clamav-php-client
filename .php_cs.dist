@@ -1,0 +1,16 @@
+<?php
+
+return PhpCsFixer\Config::create()
+    ->setRules([
+        '@PSR2' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'function_declaration' => ['closure_function_spacing' => 'none'],
+        'no_superfluous_phpdoc_tags' => true,
+    ])
+
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->exclude(['tests/', 'vendor/'])
+            ->in(__DIR__)
+    )
+;
