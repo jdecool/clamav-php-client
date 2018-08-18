@@ -9,14 +9,17 @@ use JDecool\ClamAV\Analysis\AnalysisResult;
 use JDecool\ClamAV\Exception\ConnectionError;
 use JDecool\ClamAV\Exception\ReloadingError;
 use JDecool\ClamAV\Socket\Socket;
+use Psr\Log\LoggerInterface;
 
 class Client
 {
     private $socket;
+    private $logger;
 
-    public function __construct(Socket $socket)
+    public function __construct(Socket $socket, LoggerInterface $logger)
     {
         $this->socket = $socket;
+        $this->logger = $logger;
     }
 
     public function ping(): void
@@ -118,11 +121,25 @@ class Client
 
     private function writeCommand(string $command): void
     {
+        $this->logger->debug('Write command to ClamAV deamon', [
+            'command' => $command,
+        ]);
+
         $this->socket->write("n$command\n");
     }
 
     private function sendCommand(string $command): string
     {
-        return $this->socket->send("n$command\n");
+        $this->logger->debug('Send command to ClamAV deamon', [
+            'command' => $command,
+        ]);
+
+        $result = $this->socket->send("n$command\n");
+
+        $this->logger->debug('Receive response from ClamAV deamon', [
+            'response' => $result,
+        ]);
+
+        return $result;
     }
 }

@@ -12,6 +12,7 @@ use JDecool\ClamAV\Exception\ConnectionError;
 use JDecool\ClamAV\Exception\ReloadingError;
 use JDecool\ClamAV\Socket\Socket;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class ClientTest extends TestCase
 {
@@ -24,7 +25,7 @@ class ClientTest extends TestCase
             ->willReturn('PONG');
 
         try {
-            $instance = new Client($socket);
+            $instance = new Client($socket, $this->createMock(LoggerInterface::class));
             $instance->ping();
         } catch (Exception $e) {
             $this->fail();
@@ -39,7 +40,7 @@ class ClientTest extends TestCase
             ->with("nPING\n")
             ->willReturn('');
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $this->expectException(ConnectionError::class);
 
@@ -56,7 +57,7 @@ class ClientTest extends TestCase
             ->with("nVERSION\n")
             ->willReturn($version);
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $this->assertSame($version, $instance->version());
     }
@@ -69,7 +70,7 @@ class ClientTest extends TestCase
             ->with("nVERSION\n")
             ->willReturn('');
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $this->expectException(ConnectionError::class);
 
@@ -85,7 +86,7 @@ class ClientTest extends TestCase
             ->willReturn('RELOADING');
 
         try {
-            $instance = new Client($socket);
+            $instance = new Client($socket, $this->createMock(LoggerInterface::class));
             $instance->reload();
         } catch (Exception $e) {
             $this->fail();
@@ -100,7 +101,7 @@ class ClientTest extends TestCase
             ->with("nRELOAD\n")
             ->willReturn('');
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $this->expectException(ReloadingError::class);
 
@@ -116,7 +117,7 @@ class ClientTest extends TestCase
             ->willReturn('');
 
         try {
-            $instance = new Client($socket);
+            $instance = new Client($socket, $this->createMock(LoggerInterface::class));
             $instance->shutdown();
         } catch (Exception $e) {
             $this->fail();
@@ -133,7 +134,7 @@ class ClientTest extends TestCase
             ->with("nSCAN $file\n")
             ->willReturn("$file: OK");
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $analysis = $instance->scan($file);
         $this->assertInstanceOf(Analysis::class, $analysis);
@@ -159,7 +160,7 @@ class ClientTest extends TestCase
             ->with("nSCAN $file\n")
             ->willReturn("$file: Eicar-Test-Signature FOUND");
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $analysis = $instance->scan($file);
         $this->assertInstanceOf(Analysis::class, $analysis);
@@ -185,7 +186,7 @@ class ClientTest extends TestCase
             ->with("nSCAN $file\n")
             ->willReturn("$file: lstat() failed: No such file or directory. ERROR");
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $analysis = $instance->scan($file);
         $this->assertInstanceOf(Analysis::class, $analysis);
@@ -211,7 +212,7 @@ class ClientTest extends TestCase
             ->with("nCONTSCAN $file\n")
             ->willReturn("$file: Eicar-Test-Signature FOUND");
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $analysis = $instance->contScan($file);
         $this->assertInstanceOf(Analysis::class, $analysis);
@@ -237,7 +238,7 @@ class ClientTest extends TestCase
             ->with("nMULTISCAN $file\n")
             ->willReturn("$file: Eicar-Test-Signature FOUND");
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $analysis = $instance->multiscan($file);
         $this->assertInstanceOf(Analysis::class, $analysis);
@@ -263,7 +264,7 @@ class ClientTest extends TestCase
             ->with("nALLMATCHSCAN $file\n")
             ->willReturn("$file: Eicar-Test-Signature FOUND");
 
-        $instance = new Client($socket);
+        $instance = new Client($socket, $this->createMock(LoggerInterface::class));
 
         $analysis = $instance->allMatchScan($file);
         $this->assertInstanceOf(Analysis::class, $analysis);
